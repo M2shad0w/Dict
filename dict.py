@@ -29,7 +29,7 @@ class DictBaiDu:
             self.api += self.get_param
             for i in range(1, len(argv)):
                 self.api += argv[i]+' '
-            print self.api
+            # print self.api
             self.translate()
         else:
             print 'Error! Plese Input Your Content.'
