@@ -2,10 +2,19 @@
 # -*- coding: utf-8 -*-
 
 import json
-import md5
-import urllib
+from hashlib import md5
+try:
+    from urllib import quote  # Python 2.X
+except ImportError:
+    from urllib.parse import quote  # Python 3+
 import sys
-import httplib
+try:
+    import httplib
+    import sys  
+    reload(sys)  
+    sys.setdefaultencoding('utf8')
+except ImportError:
+    import http.client as httplib
 import random
 
 appid = '20151113000005349'
@@ -27,13 +36,13 @@ class DictBaiDu(object):
             salt = random.randint(32768, 65536)
 
             sign = appid + q + str(salt) + secretKey
-            m1 = md5.new()
-            m1.update(sign)
+            m1 = md5()
+            m1.update(sign.encode('utf-8'))
             sign = m1.hexdigest()
-            self.myurl = myurl+'?appid='+appid+'&q='+urllib.quote(q)+'&from='+fromLang+'&to='+toLang+'&salt='+str(salt)+'&sign='+sign
+            self.myurl = myurl+'?appid='+appid+'&q='+quote(q)+'&from='+fromLang+'&to='+toLang+'&salt='+str(salt)+'&sign='+sign
             self.translate()
         else:
-            print 'Error! Plese Input Your Content.'
+            print('Error! Plese Input Your Content.')
 
     def translate(self):
         """
@@ -57,21 +66,21 @@ class DictBaiDu(object):
         except KeyError:
             code = self.content['error_code']
             if code == 52001:
-                print "①TIMEOUT：超时（52001）【请调整文本字符长度】"
+                print("①TIMEOUT：超时（52001）【请调整文本字符长度】")
             elif code == 52002:
-                print '②SYSTEM ERROR：翻译系统错误（52002）'
+                print('②SYSTEM ERROR：翻译系统错误（52002）')
             elif code == 52003:
-                print "③UNAUTHORIZED USER：未授权的用户（52003）【请检查是否将api key输入错误"
+                print("③UNAUTHORIZED USER：未授权的用户（52003）【请检查是否将api key输入错误")
             else:
-                print '③msg:PARAM_FROM_TO_OR_Q_EMPTY：必填参数为空（5004）【from 或 to 或query 三个必填参数，请检查是否相关参数未填写完整】'
+                print('③msg:PARAM_FROM_TO_OR_Q_EMPTY：必填参数为空（5004）【from 或 to 或query 三个必填参数，请检查是否相关参数未填写完整】')
             return
-        print '\033[1;31m################################### \033[0m'
+        print('\033[1;31m################################### \033[0m')
 
         if trans_result != 'None':
             for i in range(0, len(trans_result)):
-                print '\033[1;31m# \033[0m', (trans_result[i]['src']), (trans_result[i]['dst'])
+                print('\033[1;31m# \033[0m %s %s' % ((trans_result[i]['src']), (trans_result[i]['dst'])))
         else:
-            print '\033[1;31m# \033[0m Explains None'
-        print '\033[1;31m################################### \033[0m'
+            print('\033[1;31m# \033[0m Explains None')
+        print('\033[1;31m################################### \033[0m')
 if __name__ == '__main__':
     DictBaiDu(sys.argv)
