@@ -5,9 +5,9 @@
 ---
 ### Install
 
-	wget https://raw.githubusercontent.com/m2shad0w/Dict/master/dict.py
-	sudo mv ./dict.py /usr/local/bin/dict
-	sudo chmod +x /usr/local/bin/dict
+	wget https://raw.githubusercontent.com/m2shad0w/Dict/master/install.sh
+	sh install.sh
+	
 ### Usage
 	英文 －> 中文
 	$ dict dict
