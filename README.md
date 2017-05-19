@@ -1,6 +1,6 @@
 # Dict
 ---
-翻译——基于百度API的翻译脚本,mac下的翻译工具
+翻译——基于百度API的翻译脚本, mac下的翻译工具
 
 ---
 ### Iinstall
@@ -26,3 +26,6 @@
 	###################################
 	#  字典 中国 Dictionary China
 	###################################
+
+### 更新
+[百度接口改变](http://api.fanyi.baidu.com/api/trans/product/apidoc#allDemos)

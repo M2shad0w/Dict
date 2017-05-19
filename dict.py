@@ -1,49 +1,56 @@
-#! /usr/bin/env python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-_author_ = 'm2shad0w'
-_Time_ = '2015-09-26'
-_version_ = '1.00'
 
 import json
+import md5
 import urllib
-import urllib2
 import sys
+import httplib
+import random
 
+appid = '20151113000005349'
+secretKey = 'osubCEzlGjzvw8qdQc41'
 
-class DictBaiDu:
-    _from = 'auto'
-    _to = 'auto'
-    _client_id = '5PRuCGTvkkmEkT3mYiGTGOn8'
-    api = "http://openapi.baidu.com/public/2.0/bmt/translate"
-    get_param = "?from="+_from+"&to="+_to+"&client_id="+_client_id+"&q="
-    content = None
-    post_body = {'from': _from,
-                 'to': _to,
-                 'client_id': _client_id,
-                 'q': ''
-                 }
+class DictBaiDu(object):
+    """
+    baidu dict
+    """
 
     def __init__(self, argv):
         if len(argv) > 1:
-            # self.post_body['q'] = argv[1:]
-            self.api += self.get_param
-            for i in range(1, len(argv)):
-                self.api += argv[i]+' '
-            # print self.api
+            q = ' '.join(argv[1:])
+            httpClient = None
+            myurl = '/api/trans/vip/translate'
+            fromLang = 'en'
+            toLang = 'zh'
+            self.content = None
+            salt = random.randint(32768, 65536)
+
+            sign = appid + q + str(salt) + secretKey
+            m1 = md5.new()
+            m1.update(sign)
+            sign = m1.hexdigest()
+            self.myurl = myurl+'?appid='+appid+'&q='+urllib.quote(q)+'&from='+fromLang+'&to='+toLang+'&salt='+str(salt)+'&sign='+sign
             self.translate()
         else:
             print 'Error! Plese Input Your Content.'
 
     def translate(self):
-
-        # print urllib.urlencode(self.post_body)
-        # self.content = urllib2.urlopen(self.api, urllib.urlencode(self.post_body)).read()
-        self.content = urllib2.urlopen(self.api).read()
-        self.content = json.loads(self.content)
+        """
+        翻译
+        """
+        httpClient = httplib.HTTPConnection('api.fanyi.baidu.com')
+        httpClient.request('GET', self.myurl)
+        response = httpClient.getresponse()
+        res = response.read()
+        # print type(response.read())
+        self.content = json.loads(res)
         self.parse()
-        # print self.content
 
     def parse(self):
+        """
+        解析响应内容
+        """
         try:
             trans_result = self.content['trans_result']
             # print trans_result
