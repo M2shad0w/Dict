@@ -17,8 +17,8 @@ except ImportError:
     import http.client as httplib
 import random
 
-appid = '20151113000005349'
-secretKey = 'osubCEzlGjzvw8qdQc41'
+appid = '20170519000048437'
+secretKey = 'ahaw9Gw0LK_RD27cSg6S'
 
 class DictBaiDu(object):
     """
@@ -49,10 +49,12 @@ class DictBaiDu(object):
         翻译
         """
         httpClient = httplib.HTTPConnection('api.fanyi.baidu.com')
+        # print(self.myurl)
         httpClient.request('GET', self.myurl)
         response = httpClient.getresponse()
         res = response.read()
         # print type(response.read())
+        # print(res)
         self.content = json.loads(res)
         self.parse()
 
