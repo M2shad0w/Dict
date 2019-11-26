@@ -23,4 +23,4 @@
 
 ### 更新
 兼容 python 2.x python 3.x
-[百度接口改变](http://api.fanyi.baidu.com/api/trans/product/apidoc#allDemos)
+> [百度接口改变](http://api.fanyi.baidu.com/api/trans/product/apidoc#allDemos)
