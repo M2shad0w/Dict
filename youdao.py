@@ -5,11 +5,9 @@ import uuid
 import requests
 import hashlib
 import time
-from imp import reload
-
 import time
+from sys import version_info
 
-reload(sys)
 
 YOUDAO_URL = 'https://openapi.youdao.com/api'
 APP_KEY = '69c37883a7a8a5b7'
@@ -28,7 +26,10 @@ def truncate(q):
     if q is None:
         return None
     size = len(q)
-    q = q.decode("utf-8")
+    if version_info.major == 3:
+        pass
+    else:
+        q = q.decode("utf-8")
     return q if size <= 20 else q[0:10] + str(size) + q[size - 10:size]
 
 
@@ -64,16 +65,24 @@ def connect(query_world):
         fo.close()
     else:
         # print(response.content)
-        import json
-        req = json.loads(response.content)
-        # print("-----" + response.content)
-        print('\033[1;31m{} \033[0m'.format('###' * 10))
-        print('\033[1;31m# \033[0m %s' % (req["translation"][0]))
-        # print(req["translation"][0])
-        print('\033[1;31m# \033[0m %s' % (req["web"][0]["key"]).encode("utf-8"))
-        print('\033[1;31m# \033[0m %s' % (', '.join(req["web"][0]["value"])))
-        # print(', '.join(req["web"][0]["value"]))
-        print('\033[1;31m{} \033[0m'.format('###' * 10))
+        try:
+            import json
+            req = json.loads(response.content)
+            print('\033[1;31m{} \033[0m'.format('###' * 10))
+            print('\033[1;31m# trans: \033[0m %s' % (req["translation"][0]))
+            # print(req["translation"][0])
+            if "web" in req.keys():
+                print('\033[1;31m# %s 联想 : %s\033[0m' % ('---' * 4, '---' * 4))
+                if version_info.major == 3:
+                    print('\033[1;31m# web key: \033[0m %s' % (req["web"][0]["key"]))
+                else:
+                    print('\033[1;31m# web key: \033[0m %s' % (req["web"][0]["key"]).encode("utf-8"))
+                print('\033[1;31m# web value: \033[0m %s' % (', '.join(req["web"][0]["value"])))
+            # print(', '.join(req["web"][0]["value"]))
+            print('\033[1;31m{} \033[0m'.format('###' * 10))
+        except Exception as e:
+            print(e)
+            print('\033[1;31m{} \033[0m'.format(req))
 
 
 if __name__ == '__main__':
